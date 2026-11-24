@@ -37,9 +37,9 @@ h1{font:600 1rem Georgia,"Iowan Old Style",serif;letter-spacing:.02em;color:var(
 .sun .t1{grid-column:3}
 .sun b{font-weight:500}
 .sub{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:nowrap;align-items:baseline;gap:.5em;margin-top:6px;
- white-space:nowrap;overflow:hidden;font-size:.76rem;color:var(--mute)}
+ white-space:nowrap;overflow:hidden;font-size:.50rem;color:var(--mute)}
 .sub i{font-style:normal;opacity:.45}
-.sub span[lang=ar]{font-size:.86rem}
+.sub span[lang=ar]{font-size:.50rem}
 
 .card.done{opacity:.42}
 .card.done b::after{content:" ✓";color:var(--gold);font-size:1rem}
