@@ -3,7 +3,13 @@
   const DEF = {
     mosqueName: 'Prayer Times', hijriAdjustment: 0, hijriDayChangesAtMaghrib: true, hour12: true,
     names: { fajr: 'Fajr', sunrise: 'Sunrise', dhuhr: 'Luhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha', jumuah: "Jumu'ah" },
-    iqamahGapMinutes: { fajr: 20, dhuhr: 15, asr: 15, maghrib: 5, isha: 15 }, jumuahIqamahGapMinutes: 30
+    iqamahGapMinutes: { fajr: 20, dhuhr: 15, asr: 15, maghrib: 5, isha: 15 }, jumuahIqamahGapMinutes: 30,
+    // [Arabic, Sinhala, Tamil] shown under each prayer name (can be overridden in settings.json -> "sub")
+    sub: {
+      fajr: ['الفجر', 'ෆජ්ර්', 'ஃபஜ்ர்'], sunrise: ['الشروق', 'හිරු උදාව', 'சூரிய உதயம்'],
+      dhuhr: ['الظهر', 'ලුහර්', 'லுஹர்'], asr: ['العصر', 'අස්ර්', 'அஸர்'],
+      maghrib: ['المغرب', 'මග්රිබ්', 'மஃரிப்'], isha: ['العشاء', 'ඉෂා', 'இஷா'], jumuah: ['الجمعة', 'ජුම්ආ', 'ஜும்ஆ']
+    }
   };
   let S = DEF, T = {}, lastMin = -1;
   const $ = id => document.getElementById(id), p2 = n => String(n).padStart(2, '0');
@@ -12,7 +18,7 @@
   async function load() {
     try {
       const s = await get('data/settings.json');
-      S = { ...DEF, ...s, names: { ...DEF.names, ...s.names }, iqamahGapMinutes: { ...DEF.iqamahGapMinutes, ...s.iqamahGapMinutes } };
+      S = { ...DEF, ...s, names: { ...DEF.names, ...s.names }, iqamahGapMinutes: { ...DEF.iqamahGapMinutes, ...s.iqamahGapMinutes }, sub: { ...DEF.sub, ...s.sub } };
     } catch (e) {}
     try { T = (await get('data/prayer-times.json')).times || {}; } catch (e) {}
     $('mosque').textContent = S.mosqueName;
@@ -36,7 +42,7 @@
     return ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].map(k => {
       const jum = k === 'dhuhr' && d.getDay() === 5;
       const gap = jum ? S.jumuahIqamahGapMinutes : (S.iqamahGapMinutes[k] || 0);
-      return { key: k, name: jum ? S.names.jumuah : S.names[k], adhan: t[k], iqamah: new Date(t[k].getTime() + gap * 60000) };
+      return { key: k, sub: jum ? 'jumuah' : k, name: jum ? S.names.jumuah : S.names[k], adhan: t[k], iqamah: new Date(t[k].getTime() + gap * 60000) };
     });
   }
   const fmt = d => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: S.hour12 });
@@ -78,13 +84,14 @@
 
     const t = dayTimes(today);
     const rows = [{ key: 'fajr' }, { key: 'sunrise' }, ...ev.slice(1)].map(r => {
-      if (r.key === 'sunrise') return { key: 'sunrise', name: S.names.sunrise, adhan: t.sunrise, done: now >= t.sunrise };
+      if (r.key === 'sunrise') return { key: 'sunrise', sub: 'sunrise', name: S.names.sunrise, adhan: t.sunrise, done: now >= t.sunrise };
       const e = ev.find(x => x.key === r.key); return { ...e, done: now >= e.iqamah };
     });
     $('list').innerHTML = rows.map(r => {
       const cur = st && st.e.key === r.key && st.e.adhan.getDate() === today.getDate();
       const cls = ['row', r.key === 'sunrise' ? 'sun' : '', r.done ? 'done' : '', cur ? 'now' : '', cur && st.mode === 'iqamah' ? 'iq' : ''].join(' ');
-      return `<div class="${cls}"><b>${r.name}</b><span>${fmt(r.adhan)}</span><span>${r.iqamah ? fmt(r.iqamah) : ''}</span></div>`;
+      const words = (S.sub[r.sub] || []).map((w, i) => `<span lang="${['ar', 'si', 'ta'][i]}">${w}</span>`).join('<i>|</i>');
+      return `<div class="${cls}"><div><b>${r.name}</b><div class="sub">${words}</div></div><span>${fmt(r.adhan)}</span><span>${r.iqamah ? fmt(r.iqamah) : ''}</span></div>`;
     }).join('');
   }
 
