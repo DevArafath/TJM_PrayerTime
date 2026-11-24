@@ -39,3 +39,11 @@ h1{font:600 1.15rem Georgia,"Iowan Old Style",serif;letter-spacing:.02em;color:v
 #msg{margin-top:16px;text-align:center;color:var(--mute);font-size:.85rem}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 @media(min-width:420px){#count{font-size:3rem}}
+
+/* language names on their own row under each prayer */
+.row.main{padding-bottom:2px}
+.row.subrow{display:block;border-top:0;padding:0 16px 12px}
+.row.now.main{padding:22px 16px 4px}
+.row.now.subrow{padding:0 16px 20px}
+.sub{flex-wrap:nowrap;white-space:nowrap;margin-top:0;gap:.5em}
+.row.now .sub span[lang=ar]{font-size:1.1rem}

@@ -91,7 +91,8 @@
       const cur = st && st.e.key === r.key && st.e.adhan.getDate() === today.getDate();
       const cls = ['row', r.key === 'sunrise' ? 'sun' : '', r.done ? 'done' : '', cur ? 'now' : '', cur && st.mode === 'iqamah' ? 'iq' : ''].join(' ');
       const words = (S.sub[r.sub] || []).map((w, i) => `<span lang="${['ar', 'si', 'ta'][i]}">${w}</span>`).join('<i>|</i>');
-      return `<div class="${cls}"><div><b>${r.name}</b><div class="sub">${words}</div></div><span>${fmt(r.adhan)}</span><span>${r.iqamah ? fmt(r.iqamah) : ''}</span></div>`;
+      return `<div class="${cls} main"><b>${r.name}</b><span>${fmt(r.adhan)}</span><span>${r.iqamah ? fmt(r.iqamah) : ''}</span></div>` +
+        `<div class="${cls} subrow"><div class="sub">${words}</div></div>`;
     }).join('');
   }
 
