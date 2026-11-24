@@ -1,4 +1,4 @@
-:root{--bg:#0a2e25;--bg2:#06201a;--card:#0f3b30;--ink:#f4efe1;--mute:#9db8ac;--gold:#d4a937;--line:#1d5243}
+:root{--bg:#0a2e25;--bg2:#06201a;--card:#051a15;--ink:#f4efe1;--mute:#9db8ac;--gold:#d4a937;--line:#1d5243}
 *{box-sizing:border-box;margin:0}
 html,body{min-height:100%;background:var(--bg2)}
 body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);
@@ -11,6 +11,7 @@ h1{font:600 1.15rem Georgia,"Iowan Old Style",serif;letter-spacing:.02em;color:v
 #gdate{margin-top:10px;font-size:1rem}
 #hdate{color:var(--mute);font-size:.95rem;margin-top:2px}
 #hdateAr{font:500 1.25rem "Noto Naskh Arabic","Geeza Pro","Traditional Arabic",serif;margin-top:6px;color:var(--gold)}
+
 #hero{margin:22px 0;padding:22px 12px;text-align:center;border:1px solid var(--line);border-radius:22px;
  background:linear-gradient(160deg,#145240,#0c3429)}
 #hero.iqamah{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
@@ -18,32 +19,40 @@ h1{font:600 1.15rem Georgia,"Iowan Old Style",serif;letter-spacing:.02em;color:v
 #count{font:600 2.6rem Georgia,"Iowan Old Style",serif;margin:10px 0 6px;font-variant-numeric:tabular-nums;letter-spacing:.01em}
 #count small{font:400 .9rem system-ui;color:var(--mute);margin:0 .5em 0 .15em}
 #sub{color:var(--mute);font-size:.9rem}
-#table{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--card)}
-.row{display:grid;grid-template-columns:1.3fr 1fr 1fr;align-items:center;padding:14px 16px;border-top:1px solid var(--line);
- font-variant-numeric:tabular-nums;transition:opacity .4s}
-.row.head{border:0;padding:10px 16px;font-size:.8rem;color:var(--mute)}
-.row>span:nth-child(n+2){text-align:right}
-.row b{font-weight:600;font-size:1.05rem}
-.row.sun b{font-weight:400;color:var(--mute)}
-.row.done{opacity:.42;background:rgba(0,0,0,.18)}
-.row.done b::after{content:" ✓";color:var(--gold)}
-.sub{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35em;margin-top:3px;font-size:.78rem;color:var(--mute)}
+
+/* schedule */
+.sched-title{display:flex;align-items:center;gap:10px;padding:2px 4px 12px;color:var(--gold);
+ font:700 .95rem system-ui;letter-spacing:.12em;text-transform:uppercase}
+#list{display:grid;gap:10px}
+.card{display:grid;grid-template-columns:1fr auto auto;column-gap:20px;align-items:center;
+ padding:16px 18px 14px;border-radius:18px;background:var(--card);border:1px solid #123d32;
+ border-bottom-color:#2f4a2a;font-variant-numeric:tabular-nums;transition:opacity .4s}
+.card b{font-weight:700;font-size:1.45rem;letter-spacing:.005em}
+.t{text-align:right}
+.t small{display:block;font:600 .62rem system-ui;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:2px}
+.t strong{font:700 1.7rem system-ui;white-space:nowrap}
+.tq strong{color:var(--gold)}
+.ap{font-size:.5em;font-weight:600;margin-left:.25em;color:var(--mute)}
+.tq .ap{color:var(--gold);opacity:.8}
+.sun .t1{grid-column:3}
+.sun b{font-weight:500}
+.sub{grid-column:1/-1;grid-row:2;display:flex;flex-wrap:nowrap;align-items:baseline;gap:.5em;margin-top:8px;
+ white-space:nowrap;overflow:hidden;font-size:.88rem;color:var(--mute)}
 .sub i{font-style:normal;opacity:.45}
-.sub span[lang=ar]{font-size:.95rem}
-.row.now{padding:22px 16px}
-.row.now b{font-size:1.5rem;color:var(--gold)}
-.row.now>span{font-size:1.3rem;font-weight:600}
-.row.now .sub{font-size:.85rem;color:var(--ink)}
-.row.now{background:linear-gradient(90deg,rgba(212,169,55,.22),rgba(212,169,55,.06));box-shadow:4px 0 0 var(--gold) inset}
-.row.now.iq>span:last-child{color:var(--gold);font-weight:600}
+.sub span[lang=ar]{font-size:1rem}
+
+.card.done{opacity:.42}
+.card.done b::after{content:" ✓";color:var(--gold);font-size:1rem}
+.card.now{padding:22px 20px 18px;border-color:var(--gold);
+ background:linear-gradient(135deg,rgba(212,169,55,.30),rgba(212,169,55,.08)),var(--card)}
+.card.now b{font-size:1.95rem;color:var(--gold)}
+.card.now .t strong{font-size:2.05rem}
+.card.now .t small{color:var(--ink)}
+.card.now .sub{color:var(--ink);font-size:.95rem;margin-top:10px}
+.card.now .sub span[lang=ar]{font-size:1.1rem}
+.card.now.iq .tq strong{text-shadow:0 0 16px rgba(212,169,55,.65)}
+
 #msg{margin-top:16px;text-align:center;color:var(--mute);font-size:.85rem}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 @media(min-width:420px){#count{font-size:3rem}}
-
-/* language names on their own row under each prayer */
-.row.main{padding-bottom:2px}
-.row.subrow{display:block;border-top:0;padding:0 16px 12px}
-.row.now.main{padding:22px 16px 4px}
-.row.now.subrow{padding:0 16px 20px}
-.sub{flex-wrap:nowrap;white-space:nowrap;margin-top:0;gap:.5em}
-.row.now .sub span[lang=ar]{font-size:1.1rem}
+@media(max-width:360px){.t strong{font-size:1.45rem}.card.now .t strong{font-size:1.7rem}.card.now b{font-size:1.7rem}}
