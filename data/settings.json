@@ -1,9 +1,9 @@
 {
-  "mosqueName": "Your Masjid Name",
+  "mosqueName": "Thaqwa Jummah Masjid",
   "hijriAdjustment": 0,
   "hijriDayChangesAtMaghrib": true,
   "hour12": false,
-  "iqamahGapMinutes": { "fajr": 20, "dhuhr": 15, "asr": 15, "maghrib": 5, "isha": 15 },
+  "iqamahGapMinutes": { "fajr": 20, "dhuhr": 10, "asr": 10, "maghrib": 10, "isha": 10 },
   "jumuahIqamahGapMinutes": 30,
   "names": { "fajr": "Fajr", "sunrise": "Sunrise", "dhuhr": "Luhr", "asr": "Asr", "maghrib": "Maghrib", "isha": "Isha", "jumuah": "Jumu'ah" }
 }

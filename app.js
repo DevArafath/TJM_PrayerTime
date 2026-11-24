@@ -97,7 +97,7 @@
       const cls = ['card', r.key === 'sunrise' ? 'sun' : '', r.done ? 'done' : '', cur ? 'now' : '', cur && st.mode === 'iqamah' ? 'iq' : ''].join(' ');
       const words = (S.sub[r.sub] || []).map((w, i) => `<span lang="${['ar', 'si', 'ta'][i]}">${w}</span>`).join('<i>|</i>');
       return `<div class="${cls}"><b>${r.name}</b>` +
-        `<div class="t t1"><small>${r.key === 'sunrise' ? 'Time' : 'Adhan / Athan'}</small><strong>${fmtHTML(r.adhan)}</strong></div>` +
+        `<div class="t t1"><small>${r.key === 'sunrise' ? 'Time' : 'Adhan'}</small><strong>${fmtHTML(r.adhan)}</strong></div>` +
         (r.iqamah ? `<div class="t tq"><small>Iqamah</small><strong>${fmtHTML(r.iqamah)}</strong></div>` : '') +
         `<div class="sub">${words}</div></div>`;
     }).join('');
