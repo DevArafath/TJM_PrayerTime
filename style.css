@@ -1,0 +1,34 @@
+:root{--bg:#0a2e25;--bg2:#06201a;--card:#0f3b30;--ink:#f4efe1;--mute:#9db8ac;--gold:#d4a937;--line:#1d5243}
+*{box-sizing:border-box;margin:0}
+html,body{min-height:100%;background:var(--bg2)}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);
+ background:radial-gradient(120% 60% at 50% 0,#14503f 0,var(--bg) 55%,var(--bg2) 100%) fixed;
+ padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+main{max-width:520px;margin:0 auto;padding:20px 16px 32px}
+header{text-align:center}
+h1{font:600 1.15rem Georgia,"Iowan Old Style",serif;letter-spacing:.02em;color:var(--gold)}
+#clock{font:300 1rem system-ui;color:var(--mute);margin-top:4px;font-variant-numeric:tabular-nums}
+#gdate{margin-top:10px;font-size:1rem}
+#hdate{color:var(--mute);font-size:.95rem;margin-top:2px}
+#hdateAr{font:500 1.25rem "Noto Naskh Arabic","Geeza Pro","Traditional Arabic",serif;margin-top:6px;color:var(--gold)}
+#hero{margin:22px 0;padding:22px 12px;text-align:center;border:1px solid var(--line);border-radius:22px;
+ background:linear-gradient(160deg,#145240,#0c3429)}
+#hero.iqamah{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+#label{font:500 1.05rem Georgia,serif;color:var(--mute)}
+#count{font:600 2.6rem Georgia,"Iowan Old Style",serif;margin:10px 0 6px;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+#count small{font:400 .9rem system-ui;color:var(--mute);margin:0 .5em 0 .15em}
+#sub{color:var(--mute);font-size:.9rem}
+#table{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--card)}
+.row{display:grid;grid-template-columns:1.3fr 1fr 1fr;align-items:center;padding:14px 16px;border-top:1px solid var(--line);
+ font-variant-numeric:tabular-nums;transition:opacity .4s}
+.row.head{border:0;padding:10px 16px;font-size:.8rem;color:var(--mute)}
+.row span:nth-child(n+2){text-align:right}
+.row b{font-weight:600;font-size:1.05rem}
+.row.sun b{font-weight:400;color:var(--mute)}
+.row.done{opacity:.42;background:rgba(0,0,0,.18)}
+.row.done b::after{content:" ✓";color:var(--gold)}
+.row.now{background:linear-gradient(90deg,rgba(212,169,55,.22),rgba(212,169,55,.06));box-shadow:4px 0 0 var(--gold) inset}
+.row.now.iq span:last-child{color:var(--gold);font-weight:600}
+#msg{margin-top:16px;text-align:center;color:var(--mute);font-size:.85rem}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(min-width:420px){#count{font-size:3rem}}

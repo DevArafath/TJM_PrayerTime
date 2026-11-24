@@ -1,0 +1,16 @@
+{
+  "name": "Prayer Times",
+  "short_name": "Prayer Times",
+  "description": "Daily prayer times with live countdown to adhan and iqamah.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a2e25",
+  "theme_color": "#0a2e25",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

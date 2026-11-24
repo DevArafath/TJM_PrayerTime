@@ -1,0 +1,9 @@
+{
+  "mosqueName": "Your Masjid Name",
+  "hijriAdjustment": 0,
+  "hijriDayChangesAtMaghrib": true,
+  "hour12": true,
+  "iqamahGapMinutes": { "fajr": 20, "dhuhr": 15, "asr": 15, "maghrib": 5, "isha": 15 },
+  "jumuahIqamahGapMinutes": 30,
+  "names": { "fajr": "Fajr", "sunrise": "Sunrise", "dhuhr": "Luhr", "asr": "Asr", "maghrib": "Maghrib", "isha": "Isha", "jumuah": "Jumu'ah" }
+}

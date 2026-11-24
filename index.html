@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Prayer Times</title>
+<meta name="theme-color" content="#0a2e25">
+<meta name="description" content="Daily prayer times with live countdown to adhan and iqamah.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header>
+    <h1 id="mosque">Prayer Times</h1>
+    <div id="clock" aria-label="Current time"></div>
+    <div id="gdate"></div>
+    <div id="hdate"></div>
+    <div id="hdateAr" lang="ar" dir="rtl"></div>
+  </header>
+  <section id="hero" aria-live="off">
+    <div id="label">Loading…</div>
+    <div id="count"></div>
+    <div id="sub"></div>
+  </section>
+  <section id="table">
+    <div class="row head"><span></span><span>Adhan</span><span>Iqamah</span></div>
+    <div id="list"></div>
+  </section>
+  <p id="msg"></p>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
