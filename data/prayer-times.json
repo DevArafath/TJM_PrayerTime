@@ -2,7 +2,7 @@
   "year": 2026,
   "note": "Keys are MM-DD so the same file works every year. Times can be '4:57 AM' or '16:57'.",
   "times": {
-    "01-01": { "fajr": "4:57 AM", "sunrise": "6:20 AM", "dhuhr": "12:12 PM", "asr": "3:33 PM", "maghrib": "6:03 PM", "isha": "7:18 PM" },
+    "11-24": { "fajr": "4:57 AM", "sunrise": "6:20 AM", "dhuhr": "12:12 PM", "asr": "3:33 PM", "maghrib": "6:03 PM", "isha": "7:18 PM" },
     "01-02": { "fajr": "4:57 AM", "sunrise": "6:20 AM", "dhuhr": "12:13 PM", "asr": "3:34 PM", "maghrib": "6:04 PM", "isha": "7:18 PM" },
     "01-03": { "fajr": "4:58 AM", "sunrise": "6:21 AM", "dhuhr": "12:13 PM", "asr": "3:34 PM", "maghrib": "6:04 PM", "isha": "7:19 PM" },
     "01-04": { "fajr": "4:58 AM", "sunrise": "6:21 AM", "dhuhr": "12:14 PM", "asr": "3:35 PM", "maghrib": "6:05 PM", "isha": "7:19 PM" }
