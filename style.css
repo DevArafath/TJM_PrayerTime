@@ -12,7 +12,7 @@ body{font-family:var(--sans);color:var(--ink);
 main{max-width:520px;margin:0 auto;padding:20px 16px 32px}
 header{text-align:center}
 h1{font:600 1rem var(--sans);letter-spacing:.02em;color:var(--gold)}
-#clock{font:300 .9rem var(--sans);color:var(--mute);margin-top:4px;font-variant-numeric:tabular-nums}
+#clock{font:300 1.2rem var(--sans);color:var(--mute);margin-top:1px;font-variant-numeric:tabular-nums}
 #gdate{margin-top:8px;font-size:.9rem}
 #hdate{color:var(--mute);font-size:.82rem;margin-top:2px}
 #hdateAr{font:500 1.05rem "Noto Naskh Arabic","Geeza Pro","Traditional Arabic",serif;margin-top:6px;color:var(--gold)}
