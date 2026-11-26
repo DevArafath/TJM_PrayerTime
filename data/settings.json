@@ -7,7 +7,7 @@
   "jumuahIqamahGapMinutes": 30,
 
   "ramadan": {
-    "mode": "auto",
+    "mode": "on",
     "ishaIqamahTime": "8:00 PM",
     "tarawihEnabled": true,
     "tarawihTime": "8:15 PM"
