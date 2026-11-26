@@ -15,9 +15,12 @@
   },
 
   "eid": {
-    "mode": "on",
-    "time": "Ladies 6:59 AM / Gents 07.00 AM",
-    "name": "Eid Prayer"
+    "mode": "on",    
+    "name": "Eid Prayer",
+    "times": [
+      { "label": "Ladies", "time": "6:30 AM" },
+      { "label": "Gents",  "time": "7:00 AM" }
+    ]
   },
   
   "names": { "fajr": "Fajr", "sunrise": "Sunrise", "dhuhr": "Luhr", "asr": "Asr", "maghrib": "Maghrib", "isha": "Isha", "jumuah": "Jumu'ah", "tarawih": "Tarawih Prayer" }
