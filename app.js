@@ -55,12 +55,14 @@
     const m = modeOf(S.ramadan.mode);
     return m === 'on' ? true : m === 'off' ? false : hijri(d, evening).m === 9;
   }
-  // Eid prayer time (Date) for the morning of civil day `d`, or null
-  function eidTime(d) {
+  // Eid prayer times for the morning of civil day `d`: [{ label, at: Date }] or null
+  function eidTimes(d) {
     const m = modeOf(S.eid.mode);
     if (m === 'off') return null;
     if (m === 'auto') { const h = hijri(d, false); if (!((h.m === 10 && h.d === 1) || (h.m === 12 && h.d === 10))) return null; }
-    return S.eid.time ? parse(S.eid.time, d) : null;
+    const list = Array.isArray(S.eid.times) && S.eid.times.length ? S.eid.times : (S.eid.time ? [{ label: '', time: S.eid.time }] : []);
+    const out = list.map(x => ({ label: x.label || '', at: parse(x.time, d) })).filter(x => x.at);
+    return out.length ? out : null;
   }
   function events(d) {
     const t = dayTimes(d); if (!t) return [];
@@ -126,8 +128,9 @@
     const t = dayTimes(today);
     const rows = [{ key: 'fajr' }, { key: 'sunrise' }, ...ev.slice(1)].map(r => {
       if (r.key === 'sunrise') {
-        const eid = eidTime(today);
-        return { key: 'sunrise', sub: 'sunrise', name: S.names.sunrise, adhan: t.sunrise, eid, done: now >= (eid || t.sunrise) };
+        const eid = eidTimes(today);
+        const last = eid ? new Date(Math.max(...eid.map(x => x.at))) : t.sunrise;   // stays un-ticked until the last Eid prayer
+        return { key: 'sunrise', sub: 'sunrise', name: S.names.sunrise, adhan: t.sunrise, eid, done: now >= last };
       }
       const e = ev.find(x => x.key === r.key); return { ...e, done: now >= e.iqamah };
     });
@@ -140,7 +143,7 @@
         (r.iqamah ? `<div class="t tq"><small>Iqamah</small><strong>${fmtHTML(r.iqamah)}</strong></div>` : '') +
         `<div class="sub">${words}</div>` +
         (r.tarawih ? `<div class="tar">${S.names.tarawih} · ${fmt(r.tarawih)}</div>` : '') +
-        (r.eid ? `<div class="tar">${S.eid.name} · ${fmt(r.eid)}</div>` : '') + `</div>`;
+        (r.eid ? `<div class="tar">${S.eid.name} · ${r.eid.map(x => (x.label ? x.label + ' ' : '') + fmt(x.at)).join(' · ')}</div>` : '') + `</div>`;
     }).join('');
   }
 
