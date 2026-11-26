@@ -8,9 +8,16 @@
 
   "ramadan": {
     "mode": "on",
+    "iqamahGapMinutes": { "fajr": 25, "maghrib": 10 },
     "ishaIqamahTime": "8:00 PM",
     "tarawihEnabled": true,
     "tarawihTime": "8:15 PM"
+  },
+
+  "eid": {
+    "mode": "on",
+    "time": "6:30 AM",
+    "name": "Eid Prayer"
   },
   
   "names": { "fajr": "Fajr", "sunrise": "Sunrise", "dhuhr": "Luhr", "asr": "Asr", "maghrib": "Maghrib", "isha": "Isha", "jumuah": "Jumu'ah", "tarawih": "Tarawih Prayer" }
