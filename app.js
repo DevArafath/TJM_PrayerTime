@@ -5,7 +5,9 @@
     names: { fajr: 'Fajr', sunrise: 'Sunrise', dhuhr: 'Luhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha', jumuah: "Jumu'ah", tarawih: 'Tarawih Prayer' },
     iqamahGapMinutes: { fajr: 20, dhuhr: 15, asr: 15, maghrib: 5, isha: 15 }, jumuahIqamahGapMinutes: 30,
     // mode: "auto" (Islamic month 9), "on" (always Ramadan) or "off"
-    ramadan: { mode: 'auto', ishaIqamahTime: '8:00 PM', tarawihEnabled: true, tarawihTime: '8:15 PM' },
+    ramadan: { mode: 'auto', iqamahGapMinutes: {}, ishaIqamahTime: '8:00 PM', tarawihEnabled: true, tarawihTime: '8:15 PM' },
+    // Eid prayer shown under Sunrise. mode: "auto" (1 Shawwal & 10 Dhul Hijjah), "on" or "off"
+    eid: { mode: 'auto', time: '6:30 AM', name: 'Eid Prayer' },
     // [Arabic, Sinhala, Tamil] shown under each prayer name (can be overridden in settings.json -> "sub")
     sub: {
       fajr: ['الفجر', 'ෆජ්ර්', 'ஃபஜ்ர்'], sunrise: ['الشروق', 'හිරු උදාව', 'சூரிய உதயம்'],
@@ -20,7 +22,7 @@
   async function load() {
     try {
       const s = await get('data/settings.json');
-      S = { ...DEF, ...s, names: { ...DEF.names, ...s.names }, iqamahGapMinutes: { ...DEF.iqamahGapMinutes, ...s.iqamahGapMinutes }, sub: { ...DEF.sub, ...s.sub }, ramadan: { ...DEF.ramadan, ...s.ramadan } };
+      S = { ...DEF, ...s, names: { ...DEF.names, ...s.names }, iqamahGapMinutes: { ...DEF.iqamahGapMinutes, ...s.iqamahGapMinutes }, sub: { ...DEF.sub, ...s.sub }, ramadan: { ...DEF.ramadan, ...s.ramadan }, eid: { ...DEF.eid, ...s.eid } };
     } catch (e) {}
     try { T = (await get('data/prayer-times.json')).times || {}; } catch (e) {}
     $('mosque').textContent = S.mosqueName;
@@ -39,22 +41,36 @@
     let r = T[key(d)] || (key(d) === '02-29' ? T['02-28'] : null); if (!r) return null;
     const o = {}; for (const k of KEYS) { o[k] = parse(r[k], d); if (!o[k]) return null; } return o;
   }
-  // Is the evening of civil day `d` in Ramadan? (Islamic day starts at Maghrib, plus the manual adjustment)
-  const monthFmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { month: 'numeric' });
-  function isRamadan(d) {
-    const m = S.ramadan.mode;
-    if (m === 'on' || m === true) return true;
-    if (m === 'off' || m === false) return false;
-    const h = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (+S.hijriAdjustment || 0) + (S.hijriDayChangesAtMaghrib ? 1 : 0));
-    try { return +monthFmt.formatToParts(h).find(p => p.type === 'month').value === 9; } catch (e) { return false; }
+  // Hijri month/day of civil day `d`. evening=true -> after Maghrib (the Islamic day has already rolled over)
+  const hijriFmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { month: 'numeric', day: 'numeric' });
+  function hijri(d, evening) {
+    const h = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (+S.hijriAdjustment || 0) + (evening && S.hijriDayChangesAtMaghrib ? 1 : 0));
+    try {
+      const p = hijriFmt.formatToParts(h);
+      return { m: +p.find(x => x.type === 'month').value, d: +p.find(x => x.type === 'day').value };
+    } catch (e) { return { m: 0, d: 0 }; }
+  }
+  const modeOf = v => v === true ? 'on' : v === false ? 'off' : String(v || 'auto').toLowerCase();
+  function isRamadan(d, evening) {
+    const m = modeOf(S.ramadan.mode);
+    return m === 'on' ? true : m === 'off' ? false : hijri(d, evening).m === 9;
+  }
+  // Eid prayer time (Date) for the morning of civil day `d`, or null
+  function eidTime(d) {
+    const m = modeOf(S.eid.mode);
+    if (m === 'off') return null;
+    if (m === 'auto') { const h = hijri(d, false); if (!((h.m === 10 && h.d === 1) || (h.m === 12 && h.d === 10))) return null; }
+    return S.eid.time ? parse(S.eid.time, d) : null;
   }
   function events(d) {
     const t = dayTimes(d); if (!t) return [];
     return ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].map(k => {
       const jum = k === 'dhuhr' && d.getDay() === 5;
-      const gap = jum ? S.jumuahIqamahGapMinutes : (S.iqamahGapMinutes[k] || 0);
+      let gap = jum ? S.jumuahIqamahGapMinutes : (S.iqamahGapMinutes[k] || 0);
+      const rg = (S.ramadan.iqamahGapMinutes || {})[k];                       // Ramadan-only gap (e.g. fajr, maghrib)
+      if (!jum && rg != null && isRamadan(d, k === 'maghrib' || k === 'isha')) gap = +rg;
       const e = { key: k, sub: jum ? 'jumuah' : k, name: jum ? S.names.jumuah : S.names[k], adhan: t[k], iqamah: new Date(t[k].getTime() + gap * 60000) };
-      if (k === 'isha' && isRamadan(d)) {
+      if (k === 'isha' && isRamadan(d, true)) {
         const R = S.ramadan, fixed = R.ishaIqamahTime && parse(R.ishaIqamahTime, d);
         if (fixed && fixed > t[k]) e.iqamah = fixed;                       // fixed Ramadan iqamah time
         if (R.tarawihEnabled && R.tarawihTime) e.tarawih = parse(R.tarawihTime, d);
@@ -75,7 +91,7 @@
     const t = dayTimes(now);
     if (S.hijriDayChangesAtMaghrib && t && now >= t.maghrib) h.setDate(h.getDate() + 1);
     try {
-      // $('hdate').textContent = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' }).format(h);
+      $('hdate').textContent = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' }).format(h);
       $('hdateAr').textContent = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(h);
     } catch (e) {}
   }
@@ -109,7 +125,10 @@
 
     const t = dayTimes(today);
     const rows = [{ key: 'fajr' }, { key: 'sunrise' }, ...ev.slice(1)].map(r => {
-      if (r.key === 'sunrise') return { key: 'sunrise', sub: 'sunrise', name: S.names.sunrise, adhan: t.sunrise, done: now >= t.sunrise };
+      if (r.key === 'sunrise') {
+        const eid = eidTime(today);
+        return { key: 'sunrise', sub: 'sunrise', name: S.names.sunrise, adhan: t.sunrise, eid, done: now >= (eid || t.sunrise) };
+      }
       const e = ev.find(x => x.key === r.key); return { ...e, done: now >= e.iqamah };
     });
     $('list').innerHTML = rows.map(r => {
@@ -120,7 +139,8 @@
         `<div class="t t1"><small>${r.key === 'sunrise' ? 'Time' : 'Adhan / Athan'}</small><strong>${fmtHTML(r.adhan)}</strong></div>` +
         (r.iqamah ? `<div class="t tq"><small>Iqamah</small><strong>${fmtHTML(r.iqamah)}</strong></div>` : '') +
         `<div class="sub">${words}</div>` +
-        (r.tarawih ? `<div class="tar">${S.names.tarawih} · ${fmt(r.tarawih)}</div>` : '') + `</div>`;
+        (r.tarawih ? `<div class="tar">${S.names.tarawih} · ${fmt(r.tarawih)}</div>` : '') +
+        (r.eid ? `<div class="tar">${S.eid.name} · ${fmt(r.eid)}</div>` : '') + `</div>`;
     }).join('');
   }
 
