@@ -3,19 +3,20 @@
   "hijriAdjustment": 0,
   "hijriDayChangesAtMaghrib": true,
   "hour12": false,
-  "iqamahGapMinutes": { "fajr": 20, "dhuhr": 10, "asr": 10, "maghrib": 10, "isha": 10 },
+  "iqamahGapMinutes": { "fajr": 30, "dhuhr": 10, "asr": 10, "maghrib": 10, "isha": 10 },
   "jumuahIqamahGapMinutes": 30,
 
   "ramadan": {
-    "mode": "on",
-    "iqamahGapMinutes": { "fajr": 25, "maghrib": 10 },
+    "mode": "off",
+    // can be set auto, on, off
+    "iqamahGapMinutes": { "fajr": 15, "maghrib": 20 },
     "ishaIqamahTime": "8:00 PM",
     "tarawihEnabled": true,
     "tarawihTime": "8:15 PM"
   },
 
   "eid": {
-    "mode": "on",    
+    "mode": "off",    
     "name": "Eid Prayer",
     "times": [
       { "label": "Ladies", "time": "6:30 AM" },
