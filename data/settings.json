@@ -5,5 +5,13 @@
   "hour12": false,
   "iqamahGapMinutes": { "fajr": 20, "dhuhr": 10, "asr": 10, "maghrib": 10, "isha": 10 },
   "jumuahIqamahGapMinutes": 30,
-  "names": { "fajr": "Fajr", "sunrise": "Sunrise", "dhuhr": "Luhr", "asr": "Asr", "maghrib": "Maghrib", "isha": "Isha", "jumuah": "Jumu'ah" }
+
+  "ramadan": {
+    "mode": "auto",
+    "ishaIqamahTime": "8:00 PM",
+    "tarawihEnabled": true,
+    "tarawihTime": "8:15 PM"
+  },
+  
+  "names": { "fajr": "Fajr", "sunrise": "Sunrise", "dhuhr": "Luhr", "asr": "Asr", "maghrib": "Maghrib", "isha": "Isha", "jumuah": "Jumu'ah", "tarawih": "Tarawih Prayer" }
 }
