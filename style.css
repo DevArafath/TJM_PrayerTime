@@ -61,6 +61,8 @@ h1{font:600 1rem var(--sans);letter-spacing:.02em;color:var(--gold)}
 .card.now .sub span[lang=ar]{font-size:.8rem}
 .card.now.iq .tq strong{text-shadow:0 0 16px rgba(212,169,55,.65)}
 
+.tar{grid-column:1/-1;grid-row:3;margin-top:7px;font-size:.72rem;font-weight:500;color:var(--gold)}
+.card.now .tar{font-size:.8rem}
 #msg{margin-top:16px;text-align:center;color:var(--mute);font-size:.8rem}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 @media(min-width:420px){#count{font-size:2.4rem}}

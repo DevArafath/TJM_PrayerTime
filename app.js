@@ -2,8 +2,10 @@
   const KEYS = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
   const DEF = {
     mosqueName: 'Prayer Times', hijriAdjustment: 0, hijriDayChangesAtMaghrib: true, hour12: true,
-    names: { fajr: 'Fajr', sunrise: 'Sunrise', dhuhr: 'Luhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha', jumuah: "Jumu'ah" },
+    names: { fajr: 'Fajr', sunrise: 'Sunrise', dhuhr: 'Luhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha', jumuah: "Jumu'ah", tarawih: 'Tarawih Prayer' },
     iqamahGapMinutes: { fajr: 20, dhuhr: 15, asr: 15, maghrib: 5, isha: 15 }, jumuahIqamahGapMinutes: 30,
+    // mode: "auto" (Islamic month 9), "on" (always Ramadan) or "off"
+    ramadan: { mode: 'auto', ishaIqamahTime: '8:00 PM', tarawihEnabled: true, tarawihTime: '8:15 PM' },
     // [Arabic, Sinhala, Tamil] shown under each prayer name (can be overridden in settings.json -> "sub")
     sub: {
       fajr: ['الفجر', 'ෆජ්ර්', 'ஃபஜ்ர்'], sunrise: ['الشروق', 'හිරු උදාව', 'சூரிய உதயம்'],
@@ -18,7 +20,7 @@
   async function load() {
     try {
       const s = await get('data/settings.json');
-      S = { ...DEF, ...s, names: { ...DEF.names, ...s.names }, iqamahGapMinutes: { ...DEF.iqamahGapMinutes, ...s.iqamahGapMinutes }, sub: { ...DEF.sub, ...s.sub } };
+      S = { ...DEF, ...s, names: { ...DEF.names, ...s.names }, iqamahGapMinutes: { ...DEF.iqamahGapMinutes, ...s.iqamahGapMinutes }, sub: { ...DEF.sub, ...s.sub }, ramadan: { ...DEF.ramadan, ...s.ramadan } };
     } catch (e) {}
     try { T = (await get('data/prayer-times.json')).times || {}; } catch (e) {}
     $('mosque').textContent = S.mosqueName;
@@ -37,12 +39,27 @@
     let r = T[key(d)] || (key(d) === '02-29' ? T['02-28'] : null); if (!r) return null;
     const o = {}; for (const k of KEYS) { o[k] = parse(r[k], d); if (!o[k]) return null; } return o;
   }
+  // Is the evening of civil day `d` in Ramadan? (Islamic day starts at Maghrib, plus the manual adjustment)
+  const monthFmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { month: 'numeric' });
+  function isRamadan(d) {
+    const m = S.ramadan.mode;
+    if (m === 'on' || m === true) return true;
+    if (m === 'off' || m === false) return false;
+    const h = new Date(d.getFullYear(), d.getMonth(), d.getDate() + (+S.hijriAdjustment || 0) + (S.hijriDayChangesAtMaghrib ? 1 : 0));
+    try { return +monthFmt.formatToParts(h).find(p => p.type === 'month').value === 9; } catch (e) { return false; }
+  }
   function events(d) {
     const t = dayTimes(d); if (!t) return [];
     return ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].map(k => {
       const jum = k === 'dhuhr' && d.getDay() === 5;
       const gap = jum ? S.jumuahIqamahGapMinutes : (S.iqamahGapMinutes[k] || 0);
-      return { key: k, sub: jum ? 'jumuah' : k, name: jum ? S.names.jumuah : S.names[k], adhan: t[k], iqamah: new Date(t[k].getTime() + gap * 60000) };
+      const e = { key: k, sub: jum ? 'jumuah' : k, name: jum ? S.names.jumuah : S.names[k], adhan: t[k], iqamah: new Date(t[k].getTime() + gap * 60000) };
+      if (k === 'isha' && isRamadan(d)) {
+        const R = S.ramadan, fixed = R.ishaIqamahTime && parse(R.ishaIqamahTime, d);
+        if (fixed && fixed > t[k]) e.iqamah = fixed;                       // fixed Ramadan iqamah time
+        if (R.tarawihEnabled && R.tarawihTime) e.tarawih = parse(R.tarawihTime, d);
+      }
+      return e;
     });
   }
   const fmt = d => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: S.hour12 });
@@ -102,7 +119,8 @@
       return `<div class="${cls}"><b>${r.name}</b>` +
         `<div class="t t1"><small>${r.key === 'sunrise' ? 'Time' : 'Adhan / Athan'}</small><strong>${fmtHTML(r.adhan)}</strong></div>` +
         (r.iqamah ? `<div class="t tq"><small>Iqamah</small><strong>${fmtHTML(r.iqamah)}</strong></div>` : '') +
-        `<div class="sub">${words}</div></div>`;
+        `<div class="sub">${words}</div>` +
+        (r.tarawih ? `<div class="tar">${S.names.tarawih} · ${fmt(r.tarawih)}</div>` : '') + `</div>`;
     }).join('');
   }
 
