@@ -75,7 +75,7 @@
     const t = dayTimes(now);
     if (S.hijriDayChangesAtMaghrib && t && now >= t.maghrib) h.setDate(h.getDate() + 1);
     try {
-      $('hdate').textContent = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' }).format(h);
+      // $('hdate').textContent = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' }).format(h);
       $('hdateAr').textContent = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(h);
     } catch (e) {}
   }
