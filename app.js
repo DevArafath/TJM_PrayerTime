@@ -58,7 +58,7 @@
     const t = dayTimes(now);
     if (S.hijriDayChangesAtMaghrib && t && now >= t.maghrib) h.setDate(h.getDate() + 1);
     try {
-      // $('hdate').textContent = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' }).format(h);
+      $('hdate').textContent = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' }).format(h);
       $('hdateAr').textContent = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(h);
     } catch (e) {}
   }
@@ -80,8 +80,11 @@
     }
     if (st) {
       let s = Math.max(0, Math.ceil((st.target - now) / 1000));
+      const total = s;
       const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); s %= 60;
       $('hero').className = st.mode === 'iqamah' ? 'iqamah' : '';
+      // colour: gold in the last 5 min before adhan; green during iqamah wait; red in the last minute
+      $('count').className = st.mode === 'iqamah' ? (total <= 60 ? 'red' : 'green') : (total <= 300 ? 'amber' : '');
       $('label').textContent = st.mode === 'iqamah' ? `Iqamah of ${st.e.name} in` : `Next prayer: ${st.e.name}`;
       $('count').innerHTML = `${h}<small>h</small>${p2(m)}<small>m</small>${p2(s)}<small>s</small>`;
       $('sub').textContent = st.mode === 'iqamah' ? `Adhan was at ${fmt(st.e.adhan)}` : `Adhan ${fmt(st.e.adhan)} · Iqamah ${fmt(st.e.iqamah)}`;
@@ -97,7 +100,7 @@
       const cls = ['card', r.key === 'sunrise' ? 'sun' : '', r.done ? 'done' : '', cur ? 'now' : '', cur && st.mode === 'iqamah' ? 'iq' : ''].join(' ');
       const words = (S.sub[r.sub] || []).map((w, i) => `<span lang="${['ar', 'si', 'ta'][i]}">${w}</span>`).join('<i>|</i>');
       return `<div class="${cls}"><b>${r.name}</b>` +
-        `<div class="t t1"><small>${r.key === 'sunrise' ? 'Time' : 'Adhan'}</small><strong>${fmtHTML(r.adhan)}</strong></div>` +
+        `<div class="t t1"><small>${r.key === 'sunrise' ? 'Time' : 'Adhan / Athan'}</small><strong>${fmtHTML(r.adhan)}</strong></div>` +
         (r.iqamah ? `<div class="t tq"><small>Iqamah</small><strong>${fmtHTML(r.iqamah)}</strong></div>` : '') +
         `<div class="sub">${words}</div></div>`;
     }).join('');
