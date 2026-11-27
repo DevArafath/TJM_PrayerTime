@@ -67,3 +67,7 @@ h1{font:600 1.5rem var(--sans);letter-spacing:.02em;color:var(--gold)}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 @media(min-width:420px){#count{font-size:2.4rem}}
 @media(max-width:360px){.t strong{font-size:1.15rem}.card.now .t strong{font-size:1.4rem}.card.now b{font-size:1.3rem}}
+
+#foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);text-align:center;
+ font-size:.66rem;line-height:1.6;color:var(--mute);opacity:.85}
+#foot div:last-child{margin-top:2px;color:var(--gold);opacity:.9}
