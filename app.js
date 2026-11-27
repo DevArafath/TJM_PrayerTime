@@ -1,7 +1,7 @@
 (() => {
   const KEYS = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
   const DEF = {
-    mosqueName: 'Prayer Times', hijriAdjustment: 0, hijriDayChangesAtMaghrib: true, hour12: true,
+    mosqueName: 'Thaqwa Jummah Masjid', hijriAdjustment: 0, hijriDayChangesAtMaghrib: true, hour12: true,
     names: { fajr: 'Fajr', sunrise: 'Sunrise', dhuhr: 'Luhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha', jumuah: "Jumu'ah", tarawih: 'Tarawih Prayer' },
     iqamahGapMinutes: { fajr: 20, dhuhr: 15, asr: 15, maghrib: 5, isha: 15 }, jumuahIqamahGapMinutes: 30,
     // mode: "auto" (Islamic month 9), "on" (always Ramadan) or "off"

@@ -1,5 +1,5 @@
 // Bump VERSION whenever you change index.html, style.css, app.js or icons.
-const VERSION = 'v13', CACHE = 'prayer-times-' + VERSION;
+const VERSION = 'v15', CACHE = 'prayer-times-' + VERSION;
 const SHELL = ['./', 'index.html', 'style.css', 'app.js', 'manifest.json',
   'fonts/poppins-300.woff2', 'fonts/poppins-400.woff2', 'fonts/poppins-500.woff2', 'fonts/poppins-600.woff2', 'fonts/poppins-700.woff2',
   'icons/icon-192.png', 'icons/icon-512.png', 'data/prayer-times.json', 'data/settings.json'];
