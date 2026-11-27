@@ -1,10 +1,11 @@
 (() => {
   const KEYS = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
   const DEF = {
-    mosqueName: 'Thaqwa Jummah Masjid', hijriAdjustment: 0, hijriDayChangesAtMaghrib: true, hour12: true,
+    mosqueName: 'Prayer Times', hijriAdjustment: 0, hijriDayChangesAtMaghrib: true, hour12: true,
     names: { fajr: 'Fajr', sunrise: 'Sunrise', dhuhr: 'Luhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha', jumuah: "Jumu'ah", tarawih: 'Tarawih Prayer' },
     iqamahGapMinutes: { fajr: 20, dhuhr: 15, asr: 15, maghrib: 5, isha: 15 }, jumuahIqamahGapMinutes: 30,
     // mode: "auto" (Islamic month 9), "on" (always Ramadan) or "off"
+    install: { enabled: true, hideDaysAfterDismiss: 7 },   // "Install app" banner
     ramadan: { mode: 'auto', iqamahGapMinutes: {}, ishaIqamahTime: '8:00 PM', tarawihEnabled: true, tarawihTime: '8:15 PM' },
     // Eid prayer shown under Sunrise. mode: "auto" (1 Shawwal & 10 Dhul Hijjah), "on" or "off"
     eid: { mode: 'auto', time: '6:30 AM', name: 'Eid Prayer' },
@@ -22,7 +23,7 @@
   async function load() {
     try {
       const s = await get('data/settings.json');
-      S = { ...DEF, ...s, names: { ...DEF.names, ...s.names }, iqamahGapMinutes: { ...DEF.iqamahGapMinutes, ...s.iqamahGapMinutes }, sub: { ...DEF.sub, ...s.sub }, ramadan: { ...DEF.ramadan, ...s.ramadan }, eid: { ...DEF.eid, ...s.eid } };
+      S = { ...DEF, ...s, names: { ...DEF.names, ...s.names }, iqamahGapMinutes: { ...DEF.iqamahGapMinutes, ...s.iqamahGapMinutes }, sub: { ...DEF.sub, ...s.sub }, ramadan: { ...DEF.ramadan, ...s.ramadan }, eid: { ...DEF.eid, ...s.eid }, install: { ...DEF.install, ...s.install } };
     } catch (e) {}
     try { T = (await get('data/prayer-times.json')).times || {}; } catch (e) {}
     $('mosque').textContent = S.mosqueName;
@@ -139,7 +140,7 @@
       const cls = ['card', r.key === 'sunrise' ? 'sun' : '', r.done ? 'done' : '', cur ? 'now' : '', cur && st.mode === 'iqamah' ? 'iq' : ''].join(' ');
       const words = (S.sub[r.sub] || []).map((w, i) => `<span lang="${['ar', 'si', 'ta'][i]}">${w}</span>`).join('<i>|</i>');
       return `<div class="${cls}"><b>${r.name}</b>` +
-        `<div class="t t1"><small>${r.key === 'sunrise' ? 'Time' : 'Adhan'}</small><strong>${fmtHTML(r.adhan)}</strong></div>` +
+        `<div class="t t1"><small>${r.key === 'sunrise' ? 'Time' : 'Adhan / Athan'}</small><strong>${fmtHTML(r.adhan)}</strong></div>` +
         (r.iqamah ? `<div class="t tq"><small>Iqamah</small><strong>${fmtHTML(r.iqamah)}</strong></div>` : '') +
         `<div class="sub">${words}</div>` +
         (r.tarawih ? `<div class="tar">${S.names.tarawih} · ${fmt(r.tarawih)}</div>` : '') +
@@ -147,7 +148,36 @@
     }).join('');
   }
 
-  load().then(() => { tick(); setInterval(tick, 1000); });
+  // ---- "Install app" banner ----
+  // Android/desktop Chrome & Edge: uses the browser's install prompt. iPhone/iPad: shows "Add to Home Screen" steps.
+  let deferred = null;
+  const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const DISMISS_KEY = 'installDismissedAt';
+  function dismissedRecently() {
+    try { const t = +localStorage.getItem(DISMISS_KEY); return !!t && Date.now() - t < S.install.hideDaysAfterDismiss * 864e5; } catch (e) { return false; }
+  }
+  function hideBanner() { const b = $('install'); if (b) b.remove(); }
+  function showBanner() {
+    if (!S.install.enabled || isStandalone() || dismissedRecently() || $('install')) return;
+    if (!deferred && !isIOS) return;
+    const b = document.createElement('div');
+    b.id = 'install'; b.setAttribute('role', 'dialog');
+    b.innerHTML = '<div class="i-txt"><strong>Install this app</strong><span>' +
+      (deferred ? 'Add it to your home screen for quick access, even offline.' : 'Tap <b>Share</b>, then <b>Add to Home Screen</b>.') + '</span></div>' +
+      (deferred ? '<button id="iBtn">Install App</button>' : '') + '<button id="iX" aria-label="Close">\u2715</button>';
+    document.body.appendChild(b);
+    $('iX').onclick = () => { try { localStorage.setItem(DISMISS_KEY, Date.now()); } catch (e) {} hideBanner(); };
+    if (deferred) $('iBtn').onclick = async () => {
+      deferred.prompt();
+      try { await deferred.userChoice; } catch (e) {}
+      deferred = null; hideBanner();
+    };
+  }
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; showBanner(); });
+  window.addEventListener('appinstalled', () => { deferred = null; hideBanner(); });
+
+  load().then(() => { tick(); setInterval(tick, 1000); S.install.enabled ? showBanner() : hideBanner(); });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 })();
